@@ -1,29 +1,31 @@
-# Gemini CLI Security Extension
+# Web3 Bug Bounty Security Extension for Gemini CLI
 
-The Security extension is an open-source Gemini CLI extension, built to enhance your repository's security posture. The extension adds a new command to Gemini CLI that analyzes code changes to identify a variety of security risks and vulnerabilities.
+A specialized Gemini CLI extension for **bug bounty hunting in Web3 projects**. It analyzes smart contracts, DeFi protocols, and Web3 infrastructure for vulnerabilities based on the [OWASP Smart Contract Top 10 (2026)](https://scs.owasp.org/sctop10/) and the [OWASP Web3 Attack Vectors Top 15](https://scs.owasp.org/sctop10/Web3-Attack-Vectors-Top15/).
 
 ![Security Extension Workflow](./assets/gemini-cli-security-extension-workflow.gif)
 
 ## Features
 
-- **AI-powered security analysis**: Leverages Gemini's advanced capabilities to provide intelligent and context-aware security analysis.
+- **Web3-specialized analysis**: Purpose-built for bug bounty hunting in smart contracts, DeFi protocols, and Web3 infrastructure.
+- **OWASP Smart Contract Top 10 (2026)**: Detects all 10 critical smart contract vulnerability classes (reentrancy, oracle manipulation, flash loan attacks, access control, and more).
+- **OWASP Web3 Attack Vectors Top 15**: Covers off-chain threats including multisig hijacking, supply chain attacks, private key compromise, approval phishing, drainer malware, rug pulls, DNS hijacking, and nation-state infiltration.
 - **Focused analysis**: Specifically designed to analyze code changes within pull requests, helping to identify and address vulnerabilities early in the development process.
 - **Open source**: The extension is open source and distributed under the Apache 2.0 license.
-- **Integrated with Gemini CLI**: As a Google-developed extension, it integrates seamlessly into the Gemini CLI environment, making security an accessible part of your workflow.
+- **Integrated with Gemini CLI**: Integrates seamlessly into the Gemini CLI environment, making Web3 security an accessible part of your workflow.
 - **Expandable scope**: The extension is designed with an extensible architecture, allowing for future expansion of detected security risks and more advanced analysis techniques.
 - **Dependency scans**: Identifies known vulnerabilities affecting your project's dependencies using [OSV-Scanner](https://github.com/google/osv-scanner).
 
 ## Installation
 
-Install the Security extension by running the following command from your terminal *(requires Gemini CLI v0.4.0 or newer)*:
+Install the Web3 Bug Bounty Security extension by running the following command from your terminal *(requires Gemini CLI v0.4.0 or newer)*:
 
 ```bash
-gemini extensions install https://github.com/gemini-cli-extensions/security
+gemini extensions install https://github.com/avaloki108/security-bb-web3
 ```
 
 ## Use the extension
 
-The Security extension adds the `/security:analyze` command to Gemini CLI which analyzes code changes on your current branch for common security vulnerabilities and provides an intelligent, Gemini-powered security report to improve the repository's security posture.
+The Web3 Bug Bounty Security extension adds the `/security:analyze` command to Gemini CLI which analyzes code changes on your current branch for Web3-specific vulnerabilities — smart contract bugs, DeFi exploit patterns, and off-chain attack vectors — providing an intelligent, Gemini-powered bug bounty report.
 
 Important: This report is a first-pass analysis, not a complete security audit. Use in combination with other tools and manual review.
 
@@ -110,7 +112,42 @@ Our evaluation on this dataset yielded a precision of **90%** and a recall of **
 
 ## Types of vulnerabilities
 
-The Security extension scans files for the following vulnerabilities:
+The Web3 Bug Bounty Security extension scans for the following vulnerability categories:
+
+### OWASP Smart Contract Top 10 (2026)
+
+Based on the [OWASP Smart Contract Top 10 (2026)](https://scs.owasp.org/sctop10/):
+
+- **SC01 — Access Control Vulnerabilities**: Missing or broken authorization checks on privileged functions, unprotected admin/upgrade paths, and `tx.origin` misuse
+- **SC02 — Business Logic Vulnerabilities**: Design-level flaws in lending, AMM, reward, or governance logic that break intended economic rules
+- **SC03 — Price Oracle Manipulation**: Use of manipulable spot prices or unsafe price feeds enabling under-collateralized borrows and unfair liquidations
+- **SC04 — Flash Loan–Facilitated Attacks**: Bugs that become exploitable when amplified with uncollateralized flash loan capital in a single transaction
+- **SC05 — Lack of Input Validation**: Missing validation of addresses, amounts, array bounds, or cross-chain message sources
+- **SC06 — Unchecked External Calls**: External `.call()` with unchecked return values; state updates after external calls enabling reentrancy
+- **SC07 — Arithmetic Errors**: Precision loss in share/interest/AMM calculations; rounding direction errors that can be exploited at scale
+- **SC08 — Reentrancy Attacks**: Re-entrant external calls before state is fully updated, including cross-function and cross-contract reentrancy
+- **SC09 — Integer Overflow and Underflow**: Dangerous arithmetic without overflow checks, especially in pre-0.8.0 Solidity and unsafe `unchecked` blocks
+- **SC10 — Proxy & Upgradeability Vulnerabilities**: Unprotected `initialize()`, storage collisions, and weakly governed upgrade mechanisms
+
+### OWASP Web3 Attack Vectors Top 15 (Beyond Smart Contracts)
+
+Based on the [OWASP Web3 Attack Vectors Top 15](https://scs.owasp.org/sctop10/Web3-Attack-Vectors-Top15/):
+
+- **WA01 — Multisig Hijacking**: Blind signing risks, UI spoofing in multisig interfaces, malicious delegatecall via compromised signing frontends
+- **WA02 — Supply Chain Attacks**: Malicious npm/PyPI packages, missing lockfiles, compromised `window.ethereum` injection points
+- **WA03 — Private Key Compromise**: Hardcoded keys, weak entropy, ECDSA nonce reuse, private key logging
+- **WA04 — Drainer Malware & DaaS**: Unlimited token approvals, `setApprovalForAll` misuse, `permit` signature abuse
+- **WA05 — Fake Interview & Video Call Social Engineering**: Documentation patterns that increase social engineering risk
+- **WA06 — UI/UX Spoofing & Approval Phishing**: Unclear approval flows, missing CSP headers, EIP-7702 delegation abuse
+- **WA07 — Centralised Exchange & Web2/2.5 Infrastructure Breaches**: Missing transaction limits, single points of failure in signing workflows
+- **WA08 — Phishing & General Social Engineering**: Open redirects, missing email authentication guidance, support flows requesting secrets
+- **WA09 — Romance, Investment & Pig Butchering Scams**: Misleading "guaranteed returns" language, fake recovery service references
+- **WA10 — Rug Pulls, Fake Airdrops & Token Impersonation**: Uncapped mint functions, owner-controlled pause/blacklist, hidden fee mechanisms
+- **WA11 — Wrench Attacks & Physical Coercion**: Single-key treasury ownership, missing spend limits, absent time-locked withdrawals
+- **WA12 — Insider Threats & Collusive Abuse**: Admin functions bypassing timelocks, single-person key control
+- **WA13 — DNS, Domain & Routing Infrastructure Hijacking**: Missing CSP/SRI headers, CDN-hosted scripts without integrity checks
+- **WA14 — Wallet Software, Extension & App Compromises**: Overly broad extension permissions, unpinned wallet SDK versions
+- **WA15 — Nation-State Infiltration via Fake Hiring & Malicious OSS Contributions**: CI/CD pipeline access to production secrets, auto-merge policies, missing npm provenance
 
 ### Secrets management
 
@@ -144,14 +181,15 @@ The Security extension scans files for the following vulnerabilities:
 
 ## Resources
 
+- [OWASP Smart Contract Top 10 (2026)](https://scs.owasp.org/sctop10/): Reference list for the top 10 smart contract vulnerabilities
+- [OWASP Web3 Attack Vectors Top 15](https://scs.owasp.org/sctop10/Web3-Attack-Vectors-Top15/): Reference list for the top 15 off-chain Web3 attack vectors
 - [Gemini CLI extensions](https://github.com/google-gemini/gemini-cli/blob/main/docs/extensions/index.md): Documentation about using extensions in Gemini CLI
-- Blog post (coming soon!): More information about the Security extension
-- [GitHub issues](https://github.com/gemini-cli-extensions/security/issues): Report bugs or request features
+- [GitHub issues](https://github.com/avaloki108/security-bb-web3/issues): Report bugs or request features
 
 ## Legal
 
-- License: [Apache License 2.0](https://github.com/gemini-cli-extensions/security/blob/main/LICENSE)
-- Security: [Security Policy](https://github.com/gemini-cli-extensions/security/blob/main/SECURITY.md)
+- License: [Apache License 2.0](https://github.com/avaloki108/security-bb-web3/blob/main/LICENSE)
+- Security: [Security Policy](https://github.com/avaloki108/security-bb-web3/blob/main/SECURITY.md)
 
 ## Star history
 
